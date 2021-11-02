@@ -1,5 +1,5 @@
 db.sqlite
 venv/
 migrations/
-.idea
-__pycache__
+.idea/
+__pycache__/
