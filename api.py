@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
@@ -134,3 +135,16 @@ def delete_user_grocerlist(itemid):
     db.session.commit()
 
     return jsonify({'success': 'Your item was deleted.'})
+
+# schedule a deliver. exampe "scheduletime": "11/1/2021 14:30"
+@app.route('/api/schedule/<userid>', methods=['POST'])
+def schedule_delivery(userid):
+    data = request.get_json()
+
+    time = data['scheduletime']
+
+    newTime = datetime.datetime.strptime(time, '%m/%d/%Y %H:%M')
+    hr = newTime.hour
+    if hr < 10 or hr > 19:
+        return jsonify({'error': 'You must schedule between 10 am and 7pm.'})
+    return jsonify({"scheduled": newTime})
